@@ -15,7 +15,7 @@ plans:
       fetch-User-deatils-from-ftp1.0.1: {}
 apis:
   fetch-User-deatils-from-ftp1.0.1:
-    $ref: fetch-User-deatils-from-ftp_1.0.1.yaml
+    $ref: Fetch-User-Details-From-FTP-1.0.1
 visibility:
   view:
     type: public

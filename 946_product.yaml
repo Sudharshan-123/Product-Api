@@ -12,13 +12,10 @@ plans:
       default:
         value: 100/1hour
     apis:
-      fetch-User-deatils-from-ftp1.0.1: {}
       script_demo1.0.0: {}
       encrypt_req1.2: {}
       praveen_api1.0.0: {}
 apis:
-  fetch-User-deatils-from-ftp1.0.1:
-    $ref: fetch-User-deatils-from-ftp_1.0.1.yaml
   script_demo1.0.0:
     $ref: script_demo_1.0.0.yaml
   encrypt_req1.2:

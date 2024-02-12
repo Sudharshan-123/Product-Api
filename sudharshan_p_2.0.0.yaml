@@ -1,0 +1,30 @@
+info:
+  version: 2.0.0
+  title: sudharshan_p
+  name: sudharshan_p
+gateways:
+  - datapower-api-gateway
+plans:
+  default-plan:
+    title: Default Plan
+    description: Default Plan
+    rate-limits:
+      default:
+        value: 100/1hour
+    apis:
+      fetch-User-deatils-from-ftp1.0.1: {}
+apis:
+  fetch-User-deatils-from-ftp1.0.1:
+    $ref: fetch-User-deatils-from-ftp_1.0.1.yaml
+visibility:
+  view:
+    type: public
+    orgs: []
+    tags: []
+    enabled: true
+  subscribe:
+    type: authenticated
+    orgs: []
+    tags: []
+    enabled: true
+product: 1.0.0

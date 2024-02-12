@@ -1,0 +1,119 @@
+swagger: '2.0'
+info:
+  title: Fetch-User-Details-From-FTP
+  x-ibm-name: fetch-User-deatils-from-ftp
+  version: 1.0.1
+x-ibm-configuration:
+  cors:
+    enabled: true
+  gateway: datapower-api-gateway
+  type: rest
+  phase: realized
+  enforced: true
+  testable: true
+  assembly:
+    execute:
+      - operation-switch:
+          version: 2.0.0
+          title: operation-switch
+          case:
+            - operations:
+                - verb: get
+                  path: /fetchfilefromFTP
+              execute:
+                - xslt:
+                    version: 2.0.0
+                    title: xslt
+                    input: false
+                    source: "<xsl:stylesheet exclude-result-prefixes=\"dp\" extension-element-prefixes=\"dp\" xmlns:dp=\"http://www.datapower.com/extensions\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" version=\"1.0\">\r\n<xsl:template match=\"/\">\r\n<xsl:variable name=\"ftp-put-url\"\r\n   select=\"'ftp://sudharshan:password@192.168.1.175/u.xml'\"/>\r\n<dp:url-open target=\"{$ftp-put-url}\">\r\n  <xsl:copy-of select=\"/\"/>\r\n</dp:url-open>\r\n</xsl:template>\r\n</xsl:stylesheet>"
+                    serialize-output: true
+                - parse:
+                    version: 2.1.0
+                    title: parse
+                    parse-settings-reference:
+                      default: apic-default-parsesettings
+            - operations:
+                - verb: get
+                  path: /insertintoDB
+              execute:
+                - xslt:
+                    version: 2.0.0
+                    title: Reading File From Database
+                    input: false
+                    source: "<xsl:stylesheet exclude-result-prefixes=\"dp\" extension-element-prefixes=\"dp\" xmlns:dp=\"http://www.datapower.com/extensions\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" version=\"1.0\">\r\n\r\n\r\n<xsl:template match=\"/\">\r\n\r\n\r\n<xsl:variable name=\"ftp-put-url\"\r\n   select=\"'ftp://sudharshan:password@192.168.1.213/new.xml'\"/>\r\n<dp:url-open target=\"{$ftp-put-url}\">\r\n  <xsl:copy-of select=\"/\"/>\r\n</dp:url-open>\r\n\r\n</xsl:template>\r\n\r\n</xsl:stylesheet>"
+                    serialize-output: true
+                - parse:
+                    version: 2.1.0
+                    title: parse
+                    parse-settings-reference:
+                      default: apic-default-parsesettings
+                - xslt:
+                    version: 2.0.0
+                    title: Inserting into Database
+                    input: true
+                    source: "<xsl:stylesheet version=\"1.0\"\r\n    xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" xmlns:dp=\"http://www.datapower.com/extensions\" xmlns:apim=\"http://www.ibm.com/apimanagement\"\r\n    extension-element-prefixes=\"dp apim\">\r\n    <xsl:output indent=\"yes\" encoding=\"UTF-8\" version=\"1.0\" method=\"xml\"/>\r\n    \r\n    <xsl:template match=\"/\">\r\n        \r\n        <xsl:variable name=\"Username\">\r\n            \r\n            <xsl:value-of select=\"//Username\" />\r\n            \r\n        </xsl:variable>\r\n        \r\n        <xsl:variable name=\"Password\">\r\n            \r\n            <xsl:value-of select=\"//Password\" />\r\n            \r\n        </xsl:variable>\r\n        \r\n        <xsl:variable name=\"OutputCredential\">\r\n            \r\n            <xsl:value-of select=\"//OutputCredential\" />\r\n            \r\n        </xsl:variable>\r\n        <dp:sql-execute source=\"'S_SQL'\" statement=\"'insert into User_cred values(?,?,?)'\">\r\n            <arguments>\r\n                <argument type=\"SQL_VARCHAR\" mode=\"INPUT\">\r\n                    <xsl:value-of select=\"$Username\"/>\r\n                </argument>\r\n                <argument type=\"SQL_VARCHAR\" mode=\"INPUT\">\r\n                    <xsl:value-of select=\"$Password\"/>\r\n                </argument>\r\n                <argument type=\"SQL_VARCHAR\" mode=\"INPUT\">\r\n                    <xsl:value-of select=\"$OutputCredential\"/>\r\n                </argument>\r\n            </arguments>\r\n        </dp:sql-execute>\r\n    </xsl:template>\r\n</xsl:stylesheet>"
+                    serialize-output: false
+                - xslt:
+                    version: 2.0.0
+                    title: Success Response
+                    input: false
+                    source: "<xsl:stylesheet version=\"1.0\" xmlns:apigw=\"http://www.ibm.com/xmlns/datapower/2017/11/apigateway\"  xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" extension-element-prefixes=\"apigw\">\r\n    <xsl:output indent=\"yes\"  version=\"1.0\" method=\"xml\"/>\r\n <xsl:template match=\"/\">\r\n    <apigw:set-header name=\"'Content-Type'\" value=\"'application/xml'\"/>\r\n     <xsl:copy>\r\n         <output>\r\n        <status>\r\n    File Read from Remote Location\r\n            and\r\n    Inserted into Database.\r\n    Please check respective Database!!\r\n       </status>\r\n    </output>\r\n     </xsl:copy>\r\n  </xsl:template>\r\n</xsl:stylesheet>"
+                    serialize-output: true
+          otherwise: []
+    finally: []
+  properties:
+    target-url:
+      value: http://example.com/operation-name
+      description: The URL of the target service
+      encoded: false
+  activity-log:
+    enabled: true
+    success-content: activity
+    error-content: payload
+  servers:
+    - url: https://192.168.3.183:9443/raghavenderyadav/sandbox/fileread-ftp
+      description: ''
+      type:
+        - production
+        - development
+  oauth-servers:
+    Oauth:
+      tokenUrls:
+        - https://192.168.3.183:9443/raghavenderyadav/sandbox/test/oauth2/token
+      authorizationUrls: []
+      refreshUrls: []
+basePath: /fileread-ftp
+paths:
+  /insertintoDB:
+    get:
+      responses:
+        '200':
+          description: success
+          schema:
+            type: string
+    parameters: []
+  /fetchfilefromFTP:
+    get:
+      responses:
+        '200':
+          description: success
+          schema:
+            type: string
+securityDefinitions:
+  clientID:
+    type: apiKey
+    in: header
+    name: X-IBM-Client-Id
+  Oauth:
+    type: oauth2
+    x-ibm-oauth-provider: test
+    flow: application
+    tokenUrl: https://$(catalog.url)/test/oauth2/token
+    scopes:
+      Test: Test
+security:
+  - clientID: []
+  - Oauth:
+      - Test
+schemes:
+  - https

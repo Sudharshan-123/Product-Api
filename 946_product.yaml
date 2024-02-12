@@ -1,0 +1,39 @@
+info:
+  version: 1.0.0
+  title: 946_product
+  name: 946_product
+gateways:
+  - datapower-api-gateway
+plans:
+  default-plan:
+    title: Default Plan
+    description: Default Plan
+    rate-limits:
+      default:
+        value: 100/1hour
+    apis:
+      fetch-User-deatils-from-ftp1.0.1: {}
+      script_demo1.0.0: {}
+      encrypt_req1.2: {}
+      praveen_api1.0.0: {}
+apis:
+  fetch-User-deatils-from-ftp1.0.1:
+    $ref: fetch-User-deatils-from-ftp_1.0.1.yaml
+  script_demo1.0.0:
+    $ref: script_demo_1.0.0.yaml
+  encrypt_req1.2:
+    $ref: encrypt_req_1.2.yaml
+  praveen_api1.0.0:
+    $ref: praveen_api_1.0.0.yaml
+visibility:
+  view:
+    type: public
+    orgs: []
+    tags: []
+    enabled: true
+  subscribe:
+    type: authenticated
+    orgs: []
+    tags: []
+    enabled: true
+product: 1.0.0

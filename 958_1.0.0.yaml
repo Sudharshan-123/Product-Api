@@ -15,7 +15,7 @@ plans:
       gfg1.0.0: {}
 apis:
   gfg1.0.0:
-    $ref: gfg-1.0.0.yaml
+    $ref: gfg_1.0.0.yaml
 visibility:
   view:
     type: public

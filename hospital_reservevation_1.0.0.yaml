@@ -1,0 +1,85 @@
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: Hospital_reservevation
+  x-ibm-name: hospital_reservevation
+basePath: /reservevation
+x-ibm-configuration:
+  properties:
+    target-url:
+      value: http://192.168.1.172:7801/hospital
+      description: URL of the proxy policy
+      encoded: false
+  cors:
+    enabled: true
+  gateway: datapower-api-gateway
+  type: rest
+  phase: realized
+  enforced: true
+  testable: true
+  assembly:
+    execute:
+      - invoke:
+          title: invoke
+          version: 2.0.0
+          verb: keep
+          target-url: $(target-url)
+          follow-redirects: false
+          timeout: 60
+          parameter-control:
+            type: allowlist
+            values: []
+          header-control:
+            type: blocklist
+            values: []
+          inject-proxy-headers: true
+          persistent-connection: true
+      - gatewayscript:
+          version: 2.0.0
+          title: gatewayscript
+          source: "var apim=require('apim');\r\nvar urlopen = require('urlopen');\r\nvar sm = require ('service-metadata');\r\nvar req=apim.getvariable('request.body');\r\nvar resp=apim.getvariable('message.body');\r\nvar clientid=apim.getvariable('request.headers.x-ibm-client-id');\r\nvar httpMethod=apim.getvariable('request.verb');\r\nvar Application_name=apim.getvariable('client.app.name');\r\nvar Api_Name=apim.getvariable('api.name');\r\nvar Transaction_id = sm.getVar('var://service/global-transaction-id');\r\nvar log_format={\r\n    \"Api_name\":Api_Name,\r\n    \"Method\":httpMethod,\r\n    \"Application\":Application_name,\r\n    \"Client-Id\":clientid,\r\n    \"Transaction_ID\":Transaction_id,\r\n    \"Request\":req,\r\n    \"Response\":resp\r\n};\r\nconsole.options({'category':'Sample_Category'}).log(log_format);\r\n"
+    finally: []
+  activity-log:
+    enabled: true
+    success-content: activity
+    error-content: payload
+paths:
+  /:
+    post:
+      responses:
+        '200':
+          description: success
+          schema:
+            type: string
+      consumes: []
+      produces: []
+    parameters:
+      - name: Read_req
+        required: true
+        in: body
+        schema:
+          $ref: '#/definitions/Req'
+securityDefinitions:
+  clientID:
+    type: apiKey
+    in: header
+    name: X-IBM-Client-Id
+security:
+  - clientID: []
+schemes:
+  - https
+definitions:
+  Req:
+    type: object
+    example:
+      patient:
+        name: John Doe
+        dob: '1990-03-19'
+        ssn: 234-23-525
+        address: California
+        phone: '8770586755'
+        email: johndoe@gmail.com
+        cardNo: '7844481124110331'
+      doctor: thomas collins
+      hospital: grand oak community hospital
+      appointment_date: '2017-04-02'
